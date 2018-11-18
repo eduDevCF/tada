@@ -4,6 +4,33 @@ from datetime import datetime
 
 db = SQLAlchemy()
 
+##############################################################################
+# Model definitions
+
+class User(db.Model):
+    """User of ratings website."""
+
+    __tablename__ = "users"
+
+    uid = db.Column(db.Integer, autoincrement=False, primary_key=True)
+    email = db.Column(db.String(64), nullable=True)
+    password = db.Column(db.String(64), nullable=True)
+    name = db.Column(db.String(64), nullable=True)
+
+    def generate_id(self):
+
+        #TODO: add retry logic to check for duplicates
+        return int(datetime.utcnow().timestamp())
+
+    def __repr__(self):
+        """Provide helpful representation when printed."""
+
+        return f"<User user_id={self.user_id} email={self.email}>"
+
+
+##############################################################################
+# DB Config
+
 def connect_to_db(app):
     """Connect the database to our Flask app."""
 
