@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="minimalist activity tracker">
+  <meta name="keywords" content="lists,todo,tasks,activity,tracker,productivity">
+  <meta name="author" content="Christina Foran">
+
+  <title>TADA</title>
+
+</head>
+<body>
+
+  <header>
+      <h1>TADA 🎉</h1>
+      {% for flash in get_flashed_messages() %}
+        {{ flash }}
+      {% endfor %}
+
+      {% if "user" in session %}
+        <a href="/logout">Logout</a>
+      {% else %}
+        <h2>Login</h2>
+        <div id="login-form">
+            <form action="/login" method="post">
+              <label>email:<br>
+                <input type="email" name="email" required><br>
+              </label>
+              <label>password:<br>
+                <input type="password" name="pw" required><br>
+              </label>
+              <input type="submit" value="submit">
+            </form>
+            <a href="/signup">Create an account</a>
+        </div>
+      {% endif %}
+  </header>
+
+  <main>
+    {% block content %}
+        <h2>What have you accomplished today?</h2>
+    {% endblock %}
+  </main>
+
+</body>
+</html>

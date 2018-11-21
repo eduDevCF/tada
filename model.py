@@ -13,9 +13,9 @@ class User(db.Model):
     __tablename__ = "users"
 
     uid = db.Column(db.Integer, autoincrement=False, primary_key=True)
-    email = db.Column(db.String(64), nullable=True)
-    password = db.Column(db.String(64), nullable=True)
-    name = db.Column(db.String(64), nullable=True)
+    email = db.Column(db.String(64), nullable=False)
+    password = db.Column(db.Binary(60), nullable=False)
+    name = db.Column(db.String(64), nullable=False)
 
     def generate_id(self):
 
@@ -48,4 +48,7 @@ if __name__ == "__main__":
 
     from server import app
     connect_to_db(app)
+    db.create_all()
+    db.session.commit()
+
     print("Connected to DB.")
