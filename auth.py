@@ -17,7 +17,7 @@ def register_user(request):
     pw_hash = bcrypt.generate_password_hash(pw)
     uid = int(datetime.utcnow().timestamp())
 
-    new_user = User(name=name, email=email, password=pw_hash, uid=uid)
+    new_user = User(name=name, email=email, pw=pw_hash, uid=uid)
 
     db.session.add(new_user)
     db.session.commit()
@@ -37,7 +37,7 @@ def validate_login(request):
         flash("No such user")
 
 
-    if bcrypt.check_password_hash(user.password, pw):
+    if bcrypt.check_password_hash(user.pw, pw):
         session["user"] = {
             'name': user.name,
             'email': user.email,
