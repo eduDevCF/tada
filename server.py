@@ -7,7 +7,7 @@ from flask_bcrypt import Bcrypt
 from jinja2 import StrictUndefined
 from datetime import datetime
 
-from model import connect_to_db, User
+from model import db, connect_to_db, User, List, Item, Activity
 import auth
 
 
@@ -19,7 +19,14 @@ bcrypt = Bcrypt(app)
 
 @app.route("/")
 def index():
-    return render_template('home.html')
+    user = session.get("user")
+    user_obj = None
+
+    if user:
+        user_obj = User.query.get(user['id'])
+        print(user_obj)
+
+    return render_template('home.html', user=user_obj)
 
 
 #######################
@@ -61,15 +68,18 @@ def log_activity():
 def create_new_list():
 
     user = session.get("user")
-    list_name = request.form["name"]
+    list_name = request.form["list_name"]
     timestamp = datetime.now()
 
-    new_list = List(user_id=user.id, name=list_name, date_created=timestamp)
+    new_list = List(user_id=user['id'], name=list_name, date_created=timestamp)
     #TODO: Error Handling
     db.session.add(new_list)
     db.session.commit()
 
-    return redirect("/list/" + td_list.list_id)
+    # For now redirect to home because currently this redirect only returns json
+    # Plus it's buggy
+    # return redirect("/list/" + str(new_list.list_id))
+    return redirect("/")
 
 
 
@@ -79,12 +89,15 @@ def list_requests(list_id):
     user = session.get("user")
     td_list = List.query.get(list_id)
 
-    if user.id != td_list.user_id:
+    if user['id'] != td_list.user_id:
         return "Error: Access Denied" #TODO: better error handling
 
     if request.method == 'POST':
         return update_list(request, td_list)
 
+    # These SQLAlchemy objects are not json serializable.
+    # They could eventually become too large to return them so naively.
+    # Also, I want this to return json but also redirect to a template, which isn't gonna work.
     return jsonify(td_list) #should include items; need to check that it does
 
 
@@ -117,7 +130,7 @@ def create_new_item():
     item_name = request.form["name"]
     timestamp = datetime.now()
 
-    new_item = Item(user_id=user.id, list_id=list_id, name=item_name, last_active=timestamp)
+    new_item = Item(user_id=user['id'], list_id=list_id, name=item_name, last_active=timestamp)
     #TODO: Error Handling
     db.session.add(new_item)
     db.session.commit()
@@ -132,7 +145,7 @@ def item_requests(item_id):
     user = session.get("user")
     item = Item.query.get(item_id)
 
-    if user.id != item.user_id:
+    if user['id'] != item.user_id:
         return "Error: Access Denied" #TODO: better error handling
 
     if request.method == 'POST':
@@ -170,7 +183,7 @@ def log_new_activity():
     item_id = request.form["item_id"]
     timestamp = datetime.now()
 
-    new_activity = Activity(user_id=user.id, item_id=item_id, last_active=timestamp)
+    new_activity = Activity(user_id=user['id'], item_id=item_id, last_active=timestamp)
     #TODO: Error Handling
     db.session.add(new_activity)
     db.session.commit()
@@ -185,7 +198,7 @@ def activity_requests(activity_id):
     user = session.get("user")
     activity = Activity.query.get(activity_id)
 
-    if user.id != activity.user_id:
+    if user['id'] != activity.user_id:
         return "Error: Access Denied" #TODO: better error handling
 
     if request.method == 'POST':

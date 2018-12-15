@@ -25,7 +25,7 @@ class User(db.Model):
     def __repr__(self):
         """Provide helpful representation when printed."""
 
-        return f"<User user_id={self.user_id} email={self.email}>"
+        return f"<User user_id={self.uid} email={self.email}>"
 
 
 class List(db.Model):

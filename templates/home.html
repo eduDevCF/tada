@@ -2,9 +2,23 @@
 {% block content %}
 
   {% if "user" in session %}
-    <h2><i>What have you accomplished today?</i></h2>
+    <h2><i>{{ user.name }}, what have you accomplished today?</i></h2>
 
     <h2>Your Lists</h2>
+    <ul>
+        <li>
+            <form action='/list' method='post'>
+                <input type="text" name="list_name" id="list_name" placeholder="Create a new list" aria-label="New list name" maxlength="100" required>
+                <button type="submit" id="new_list" area-label="Add new list">+</button>
+            </form>
+        </li>
+        {% for l in user.lists %}
+        <li><a href="/list/{{ l.list_id }}">{{ l.name }}</a></li>
+        {% endfor %}
+    </ul>
+  {% else %}
+    <h2><i>Need a sense of accomplishment?</i></h2>
+    <p><a href="/login">Log in</a> or <a href="/signup">create an account</a>.</p>
   {% endif %}
 
 
