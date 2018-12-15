@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+
+  {% if "user" in session %}
+    <h2>List Name</h2>
+    <p>description</p>
+
+    <h3>Items</h3>
+    <div>Show All</div>
+    <div>Add New Item</div>
+
+    <ul>
+        <li><h4>Item Name</h4>
+            <div>Show more info</div>
+            <div>Log Activity</div>
+        </li>
+    </ul>
+
+  {% endif %}
+
+
+{% endblock %}
