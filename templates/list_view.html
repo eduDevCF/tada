@@ -2,18 +2,56 @@
 {% block content %}
 
   {% if "user" in session %}
-    <h2>List Name</h2>
-    <p>description</p>
+    <br><br>
+    <div id="display_list_info" class="hidden">
+      <h2 id="display_list_name">{{ list.name }}</h2>
+      <p id="display_list_desc">
+        {% if list.desc %}
+          {{ list.desc }}
+        {% else %}
+          <i>Edit to add description</i>
+        {% endif %}
+      </p>
+    </div>
+
+    <div id="list_form">
+      <form action='/list/{{ list.list_id }}' method='post'>
+        <input type="text" name="list_name" id="list_name" value="{{ list.name }}" aria-label="List name" maxlength="100" size="50" required><br>
+        <textarea name="list_desc" id="list_desc" placeholder="Add a description" aria-label="List description" rows="4" cols="48">{% if list.desc %}{{ list.desc }}{% endif %}</textarea><br>
+        <button type="submit" id="update_list" area-label="Update list info">Update</button>
+      </form>
+    </div>
+
+
 
     <h3>Items</h3>
-    <div>Show All</div>
-    <div>Add New Item</div>
 
     <ul>
-        <li><h4>Item Name</h4>
-            <div>Show more info</div>
-            <div>Log Activity</div>
+      <li>
+        <form action='/item' method='post'>
+          <input type="text" name="item_name" id="item_name" placeholder="Add a new item" aria-label="New item name" maxlength="100" required>
+          <input type="hidden" name="list_id" id="list_id" value="{{ list.list_id }}">
+          <button type="submit" id="new_item" area-label="Add new item">+</button>
+        </form>
+      </li>
+      {% for item in list.items %}
+        <li id="item_{{ item.item_id }}">
+          <h4 class="item_name display_inline">{{ item.name }}</h4>
+          <span class="log_form">
+              <form action='/activity' method='post' class="display_inline">
+                  <input type="hidden" name="item_id" id="item_id" value="{{ item.item_id }}">
+                  <button type="submit" id="new_activity" area-label="Log activity">TADA</button>
+              </form>
+          </span>
+          <ul id="ia_{{item.item_id}}">
+            {% for activity in item.activity %}
+            <li id="activity_{{activity.activity_id}}">
+                {{ activity.date_logged.strftime('%A, %b. %-d, %Y %-I:%M %p') }}
+            </li>
+            {% endfor %}
+          </ul>
         </li>
+      {% endfor %}
     </ul>
 
   {% endif %}
