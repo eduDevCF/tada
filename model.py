@@ -71,6 +71,9 @@ class Item(db.Model):
     in_list = db.relationship("List",
                            backref=db.backref("items", order_by=item_id))
 
+    # Define relationship to activity logs
+    activity = db.relationship('Activity', order_by='Activity.date_logged.desc()')
+
     def __repr__(self):
         """Provide helpful representation when printed."""
 
@@ -91,10 +94,6 @@ class Activity(db.Model):
 
     # Define relationship to user
     user = db.relationship("User",
-                           backref=db.backref("activity", order_by=date_logged))
-
-    # Define relationship to list item
-    for_item = db.relationship("Item",
                            backref=db.backref("activity", order_by=date_logged))
 
     def __repr__(self):
