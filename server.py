@@ -98,15 +98,16 @@ def list_requests(list_id):
     # These SQLAlchemy objects are not json serializable.
     # They could eventually become too large to return them so naively.
     # Also, I want this to return json but also redirect to a template, which isn't gonna work.
-    return jsonify(td_list) #should include items; need to check that it does
+    # return jsonify(td_list) #should include items; need to check that it does
+    return render_template('list_view.html', list=td_list)
 
 
 
 def update_list(request, td_list):
 
-    name = request.form['name']
-    desc = request.form['desc']
-    archive = request.form['archive']
+    name = request.form['list_name']
+    desc = request.form['list_desc']
+    archive = request.form.get('archive')
 
     if name:
         td_list.name = name
@@ -118,7 +119,10 @@ def update_list(request, td_list):
     db.session.add(td_list)
     db.session.commit()
 
-    return (jsonify(td_list))
+    list_url = "/list/" + str(td_list.list_id)
+
+    # return (jsonify(td_list))
+    return redirect(list_url)
 
 
 
@@ -127,7 +131,7 @@ def create_new_item():
 
     user = session.get("user")
     list_id = request.form["list_id"]
-    item_name = request.form["name"]
+    item_name = request.form["item_name"]
     timestamp = datetime.now()
 
     new_item = Item(user_id=user['id'], list_id=list_id, name=item_name, last_active=timestamp)
@@ -135,7 +139,9 @@ def create_new_item():
     db.session.add(new_item)
     db.session.commit()
 
-    return jsonify(new_item)
+    list_url = "/list/" + str(list_id)
+    #return jsonify(new_item)
+    return redirect(list_url)
 
 
 
@@ -151,8 +157,11 @@ def item_requests(item_id):
     if request.method == 'POST':
         return update_item(request, item)
 
-    return jsonify(item) #should include activity; need to check that it does
 
+    list_url = "/list/" + str(item.list_id)
+
+    #return jsonify(item) #should include activity; need to check that it does
+    return redirect(list_url)
 
 
 def update_item(request, item):
@@ -183,13 +192,20 @@ def log_new_activity():
     item_id = request.form["item_id"]
     timestamp = datetime.now()
 
-    new_activity = Activity(user_id=user['id'], item_id=item_id, last_active=timestamp)
-    #TODO: Error Handling
-    db.session.add(new_activity)
-    db.session.commit()
+    item = Item.query.get(item_id)
 
-    return jsonify(new_activity)
+    if item:
+        new_activity = Activity(user_id=user['id'], item_id=item_id, date_logged=timestamp)
+        #TODO: Error Handling
+        db.session.add(new_activity)
+        db.session.commit()
+    else:
+        return "Error: Item ID not found"
 
+    list_url = "/list/" + str(item.list_id)
+
+    #return jsonify(new_activity)
+    return redirect(list_url)
 
 
 @app.route("/activity/<int:activity_id>", methods=['GET', 'POST'])
