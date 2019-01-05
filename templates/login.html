@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block content %}
+
+  {% if "user" not in session %}
+  <header class="w3-container" style="margin-top:80px; margin-right:300px;" id="header">
+    <h1 class="w3-jumbo"><b>TADA 🎉</b></h1>
+    <h2 class="w3-xlarge w3-text-metro-teal"><b>Got lots to do today? Let's get it done!</b></h2>
+    <hr style="width:50px;border:5px solid #603cba" class="w3-round">
+  </header>
+
+  <div class="w3-container" id="login-form" style="margin-right:300px">
+    <h3 class="w3-xxxlarge w3-text-metro-teal">Log In</h3>
+    <form action="/login" method="post">
+      <div class="w3-section">
+        <label>email:<br>
+          <input class="w3-input w3-border" type="email" name="email" required><br>
+        </label>
+      </div>
+      <div class="w3-section">
+        <label>password:<br>
+          <input class="w3-input w3-border" type="password" name="pw" required><br>
+        </label>
+      </div>
+      <button type="submit" value="Log In" class="w3-button w3-block w3-padding-large w3-metro-dark-purple w3-margin-bottom">Log In</button>
+    </form>
+    <a href="/signup" class="w3-center w3-button w3-metro-teal w3-padding-large w3-hover-black">Create an account</a>
+  </div>
+  {% else %}
+    <p>You've already created your account.</p>
+  {% endif %}
+
+  <script>
+    function passwordsMatch(currentInput){
+        var pw = document.getElementById("pw").value;
+        var pw_confirm = document.getElementById("pw_confirm").value;
+        if (pw_confirm != "" && pw != pw_confirm){
+            currentInput.setCustomValidity('Passwords must match.');
+        }else{
+            currentInput.setCustomValidity('');
+        }
+    }
+  </script>
+
+
+{% endblock %}
