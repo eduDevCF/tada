@@ -2,23 +2,39 @@
 {% block content %}
 
   {% if "user" in session %}
-    <h2><i>{{ user.name }}, what have you accomplished today?</i></h2>
+  <header class="w3-container" style="margin-top:80px;" id="header">
+    <h1 class="w3-jumbo"><b>TADA 🎉</b></h1>
+    <h2 class="w3-xlarge w3-text-metro-teal"><b>{{ user.name }}, what have you accomplished today?</b></h2>
+    <hr style="width:50px;border:5px solid #603cba" class="w3-round">
+  </header>
 
-    <h2>Your Lists</h2>
-    <ul>
-        <li>
-            <form action='/list' method='post'>
-                <input type="text" name="list_name" id="list_name" placeholder="Create a new list" aria-label="New list name" maxlength="100" required>
-                <button type="submit" id="new_list" area-label="Add new list">+</button>
-            </form>
-        </li>
-        {% for l in user.lists %}
-        <li><a href="/list/{{ l.list_id }}">{{ l.name }}</a></li>
-        {% endfor %}
+  <div class="w3-twothird w3-margin-bottom">
+    <ul class="w3-ul w3-light-grey">
+      <li class="w3-metro-dark-purple w3-xlarge w3-padding-32"><h2>My Lists</h2></li>
+      <li class="w3-padding-16 w3-row-padding">
+          <form action='/list' method='post'>
+              <div class="w3-col" style="width:50px">
+                <button class="w3-button w3-circle w3-metro-teal" type="submit" id="new_list" area-label="Add new list">+</button>
+              </div>
+              <div class="w3-rest">
+                <input type="text" name="list_name" id="list_name" placeholder="Create a new list" aria-label="New list name" maxlength="100" class="w3-input w3-border" required>
+              </div>
+          </form>
+      </li>
+      {% for l in user.lists %}
+        <li class="w3-padding-16"><a href="/list/{{ l.list_id }}">{{ l.name }}</a></li>
+      {% endfor %}
     </ul>
+  </div>
+
   {% else %}
-    <h2><i>Need a sense of accomplishment?</i></h2>
+  <header class="w3-container" style="margin-top:80px; margin-right:300px;" id="header">
+    <h1 class="w3-jumbo"><b>TADA 🎉</b></h1>
+    <h2 class="w3-xxxlarge w3-text-metro-teal"><b>Need a sense of accomplishment?</b></h2>
+    <hr style="width:50px;border:5px solid #603cba" class="w3-round">
     <p><a href="/login">Log in</a> or <a href="/signup">create an account</a>.</p>
+  </header>
+
   {% endif %}
 
 

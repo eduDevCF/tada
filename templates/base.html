@@ -9,40 +9,79 @@
 
   <title>TADA</title>
   <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins">
   <link href="/static/style.css" rel="stylesheet">
 </head>
 <body>
 
-  <header>
-      <h1>TADA 🎉</h1>
-      {% for flash in get_flashed_messages() %}
-        {{ flash }}
+{% if "user" in session %}
+  <!-- Sidebar/menu -->
+  <nav class="w3-sidebar w3-metro-dark-purple w3-collapse w3-top w3-large w3-padding" style="z-index:3;width:300px;font-weight:bold;" id="mySidebar"><br>
+    <a href="javascript:void(0)" onclick="w3_close()" class="w3-button w3-hide-large w3-display-topleft" style="width:100%;font-size:22px">Close Menu</a>
+    <div class="w3-container">
+      <h3 class="w3-padding-64"><b><a href="/" onclick="w3_close()" class="w3-button w3-hover-white">TADA</a> 🎉</b></h3>
+    </div>
+    <div class="w3-bar-block">
+      <a href="#showcase" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">+ New List</a>
+      {% for l in user.lists %}
+        <a href="/list/{{ l.list_id }}" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">{{ l.name }}</a>
       {% endfor %}
 
-      {% if "user" in session %}
-        <a href="/logout">Logout</a>
-      {% else %}
-        <h2>Login</h2>
-        <div id="login-form">
-            <form action="/login" method="post">
-              <label>email:<br>
-                <input type="email" name="email" required><br>
-              </label>
-              <label>password:<br>
-                <input type="password" name="pw" required><br>
-              </label>
-              <input type="submit" value="submit">
-            </form>
-            <a href="/signup">Create an account</a>
-        </div>
-      {% endif %}
+      <br><br>
+      <a href="/logout" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-white">Log Out</a>
+
+    </div>
+  </nav>
+
+  <!-- Top menu on small screens -->
+  <header class="w3-container w3-top w3-hide-large w3-metro-dark-purple w3-xlarge w3-padding">
+    <a href="javascript:void(0)" class="w3-button w3-metro-dark-purple w3-margin-right" onclick="w3_open()">☰</a>
+    <span>TADA 🎉</span>
   </header>
 
-  <main>
+  <!-- Overlay effect when opening sidebar on small screens -->
+  <div class="w3-overlay w3-hide-large" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
+{% endif %}
+
+  <!-- !PAGE CONTENT! -->
+  <main class="w3-main" style="margin-left:340px;margin-right:40px">
+
+    {% for flash in get_flashed_messages() %}
+      {{ flash }}
+    {% endfor %}
+
+
     {% block content %}
-        <h2>What have you accomplished today?</h2>
+      <div class="w3-container" style="margin-top:80px" id="showcase">
+        <h1 class="w3-jumbo"><b>TADA 🎉</b></h1>
+        <h2 class="w3-xlarge w3-text-metro-teal"><b>What do you want to do today?</b></h2>
+        <hr style="width:50px;border:5px solid #603cba" class="w3-round">
+      </div>
     {% endblock %}
+
   </main>
 
+
+  <script>
+  // Script to open and close sidebar
+  function w3_open() {
+    document.getElementById("mySidebar").style.display = "block";
+    document.getElementById("myOverlay").style.display = "block";
+  }
+
+  function w3_close() {
+    document.getElementById("mySidebar").style.display = "none";
+    document.getElementById("myOverlay").style.display = "none";
+  }
+
+  // Modal Image Gallery
+  function onClick(element) {
+    document.getElementById("img01").src = element.src;
+    document.getElementById("modal01").style.display = "block";
+    var captionText = document.getElementById("caption");
+    captionText.innerHTML = element.alt;
+  }
+  </script>
 </body>
 </html>
