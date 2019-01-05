@@ -26,8 +26,9 @@ def index():
         user_obj = User.query.get(user['id'])
         print(user_obj)
 
-    return render_template('home.html', user=user_obj)
+        return render_template('home.html', user=user_obj)
 
+    return render_template('login.html')
 
 #######################
 ##### route stubs #####
@@ -48,8 +49,7 @@ def login():
         return auth.validate_login(request)
 
     ### Display sign in form
-    # return render_template('signin.html')
-    return "Log In"
+    return render_template('login.html')
 
 @app.route("/logout")
 def logout():
@@ -87,6 +87,7 @@ def create_new_list():
 def list_requests(list_id):
 
     user = session.get("user")
+    user_obj = User.query.get(user['id'])
     td_list = List.query.get(list_id)
 
     if user['id'] != td_list.user_id:
@@ -99,7 +100,7 @@ def list_requests(list_id):
     # They could eventually become too large to return them so naively.
     # Also, I want this to return json but also redirect to a template, which isn't gonna work.
     # return jsonify(td_list) #should include items; need to check that it does
-    return render_template('list_view.html', list=td_list)
+    return render_template('list_view.html', list=td_list, user=user_obj)
 
 
 
